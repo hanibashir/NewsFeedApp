@@ -1,0 +1,35 @@
+@if(App\Models\Category::all()->count() > 0)
+<div class="col-sm-9">
+    <select id="category_id" class="form-control" name="category_id">
+        @if(isset($edit_feed))
+        @if(isset($edit_feed->category->id))
+        <option selected value="{{ $edit_feed->category->id }}"> {{ $edit_feed->category->name }} </option>
+        @foreach (App\Models\Category::where('id', '!=', $edit_feed->category->id)->get() as $category)
+        <option value="{{ $category->id }}"> {{ $category->name }} </option>
+        @endforeach
+        @else
+        <option value="">Select Category</option>
+        @foreach (App\Models\Category::all() as $category)
+
+        <option value="{{ $category->id }}"> {{ $category->name }} </option>
+        @endforeach
+        @endif
+        @else
+        <option value="">Select Category</option>
+        @foreach (App\Models\Category::all() as $category)
+
+        <option value="{{ $category->id }}"> {{ $category->name }} </option>
+        @endforeach
+        @endif
+    </select>
+</div>
+@else
+<div class="col-sm-9">
+    <h5 class="muted-link">
+        No Categories
+        <a href="{{ url('admin') }}/categories/create">Click Here</a>
+        to add Categories
+    </h5>
+</div>
+
+@endif

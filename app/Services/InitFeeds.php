@@ -56,12 +56,22 @@ class InitFeeds
                             } else {
                                 $image = InitFeeds::get_item_image($item->get_content());
                             }
+                            $image = $item->get_enclosure()->get_link();
                             if (!empty($image)) {
-
                                 $img_type = substr(strrchr($image, '.'), 1);
+                                $img_type = strtok($img_type, '?');  // Remove any query string from file type
                                 $img_name = 'item_' . rand() . '.' . $img_type;
-                                file_put_contents(storage_path('app/public/uploads/images/items/') . $img_name, file_get_contents($image));
 
+                                // Ensure directory exists
+                                $target_path = storage_path('app/public/uploads/images/items/');
+                                if (!file_exists($target_path)) {
+                                    mkdir($target_path, 0777, true);
+                                }
+
+                                // Sanitize the filename to ensure it does not contain invalid characters
+                                $img_name = preg_replace('/[^\w\-\.]+/', '', $img_name);
+
+                                file_put_contents($target_path . $img_name, file_get_contents($image));
                             } else {
                                 $img_name = '';
                             }
